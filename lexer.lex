@@ -7,12 +7,16 @@
 %option noinput
 
 CHIFFRE  [0-9]
-OP_ARITH [-+*/%]
+OP_ARITH [-+*/%\(\)]
+PAREN [\(\)]
 ID [^0-9][A-Za-z0-9_]+
 NB 0|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-6]
+FILTER [ \t]
 
 
 %%
+{FILTER}  {continue;}
+'#'       {continue;}
 "\n"      {return SAUT_LIGNE;}
 "ALGO"    {return ALGO;}
 "ENTREE"  {return ENTREE;}
@@ -38,8 +42,10 @@ NB 0|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-6]
 "NON"     {return NON;}
 {ID}      {return ID;}
 {OP_ARITH}  {return yytext[0];}
+"#"      {}
 
-{NB} { yylval.nb = atoi(yytext); return NB;}
-.         { fprintf(stderr, "[err lexer] caractere inconnu %c\n",yytext[0]); return 1;}
+{NB} {yylval.nb = atoi(yytext); return NB;}
+.    {fprintf(stderr, "[err lexer] caractere inconnu %c %d\n",yytext[0],yytext[0]);
+      return 1;}
 
 %%

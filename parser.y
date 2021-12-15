@@ -37,6 +37,7 @@
 %token OU "OU"
 %token ET "ET"
 %token NON "NON"
+
 %token ID
 %token <nb> NB
 
@@ -47,43 +48,40 @@
 %type <noeud> INSTS
 
 %right AFFECT
+%left OU
+%left ET
+%left "<" ">" "=" SUPEGAL INFEGAL DIFF
 %left '+' '-'
 %left '*' '/' '%'
-%right NON 
-%left ET
-%left OU
-%left "<" ">" "=" SUPEGAL INFEGAL DIFF
+%right NON
 %start PROG
 
 %%
 
-PROG : ALGO ID SAUT_LIGNE
 //       ENTREE LIST_VAR SAUT_LIGNE
-       DEBUT
-       INSTS
-       FIN{ codegen(INSTS); } ;
+PROG : ALGO ID SAUT_LIGNE DEBUT INSTS FIN{ /*codegen($5);*/printf("OK\n");} ;
 
 INSTS : INSTS INST {}
       | INST  {}
       ;
 
 EXP : NB      { $$ = creer_feuilleNb(yylval.nb); }
-    | EXP OU EXP {}
-    | EXP ET EXP {}
-    | NON EXP {}
-    | EXP '*' EXP {}
-    | EXP '/' EXP {}
-    | EXP '%' EXP {}
-    | EXP '-' EXP {}
-    | EXP '+' EXP { $$ = creer_noeudOp('+', $1, $3); }
+    | '(' EXP ')' { printf("( EXP )");}
+    | EXP OU EXP {printf("OU");}
+    | EXP ET EXP {printf("ET");}
+    | NON EXP {printf("NON");}
+    | EXP '*' EXP {printf("*");}
+    | EXP '/' EXP {printf("/");}
+    | EXP '%' EXP {printf("%%");}
+    | EXP '-' EXP {printf("-");}
+    | EXP '+' EXP {printf("-");} //$$ = creer_noeudOp('+', $1, $3); }
     ;
-INST : SAUT_LIGNE
-     | VAR ID AFFECT EXP 
-     | SI EXP ALORS INSTS
-     | SI EXP ALORS INSTS SINON INSTS
-     | TQ EXP FAIRE INSTS FTQ
-     ; 
-
+INST : SAUT_LIGNE {printf("saut_ligne");}
+     | VAR ID {printf("var id saut_ligne");}
+     | SI EXP ALORS INSTS {printf("Si exp alors insts");}
+     | SI EXP ALORS INSTS SINON INSTS {printf("si exp alors sinon insts");}
+     | TQ EXP FAIRE INSTS FTQ {printf("tq exp faire sinon insts ftq");}
+     ;
 %%
 int main( int argc, char * argv[] ) {
 

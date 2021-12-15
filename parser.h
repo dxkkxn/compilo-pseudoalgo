@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.8.2.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,9 +31,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
-   especially those whose name start with YY_ or yy_.  They are
-   private implementation details that can be changed or removed.  */
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_YY_PARSER_H_INCLUDED
 # define YY_YY_PARSER_H_INCLUDED
@@ -45,39 +44,34 @@
 extern int yydebug;
 #endif
 
-/* Token kinds.  */
+/* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    YYEMPTY = -2,
-    YYEOF = 0,                     /* "end of file"  */
-    YYerror = 256,                 /* error  */
-    YYUNDEF = 257,                 /* "invalid token"  */
-    SAUT_LIGNE = 258,              /* "\n"  */
-    ALGO = 259,                    /* "ALGO"  */
-    ENTREE = 260,                  /* "ENTREE"  */
-    DEBUT = 261,                   /* "DEBUT"  */
-    FIN = 262,                     /* "FIN"  */
-    SI = 263,                      /* "SI"  */
-    SINON = 264,                   /* "SINON"  */
-    ALORS = 265,                   /* "ALORS"  */
-    FSI = 266,                     /* "FSI"  */
-    VAR = 267,                     /* "VAR"  */
-    TQ = 268,                      /* "TQ"  */
-    FAIRE = 269,                   /* "FAIRE"  */
-    FTQ = 270,                     /* "FTQ"  */
-    AFFECT = 271,                  /* "<-"  */
-    SUPEGAL = 272,                 /* ">="  */
-    INFEGAL = 273,                 /* "<="  */
-    DIFF = 274,                    /* "!="  */
-    OU = 275,                      /* "OU"  */
-    ET = 276,                      /* "ET"  */
-    NON = 277,                     /* "NON"  */
-    ID = 278,                      /* ID  */
-    NB = 279                       /* NB  */
+    SAUT_LIGNE = 258,
+    ALGO = 259,
+    ENTREE = 260,
+    DEBUT = 261,
+    FIN = 262,
+    SI = 263,
+    SINON = 264,
+    ALORS = 265,
+    FSI = 266,
+    VAR = 267,
+    TQ = 268,
+    FAIRE = 269,
+    FTQ = 270,
+    AFFECT = 271,
+    SUPEGAL = 272,
+    INFEGAL = 273,
+    DIFF = 274,
+    OU = 275,
+    ET = 276,
+    NON = 277,
+    ID = 278,
+    NB = 279
   };
-  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
@@ -90,7 +84,7 @@ union YYSTYPE
   struct asa * noeud;
  
 
-#line 94 "parser.h"
+#line 88 "parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -101,8 +95,6 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
-
 int yyparse (void);
-
 
 #endif /* !YY_YY_PARSER_H_INCLUDED  */
