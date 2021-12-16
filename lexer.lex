@@ -1,22 +1,25 @@
 %{
 #include <string.h>
 #include "parser.h" 
+  
 %}
   
 %option nounput
 %option noinput
+%option yylineno
 
 CHIFFRE  [0-9]
 OP_ARITH [-+*/%\(\)]
 PAREN [\(\)]
-ID [^0-9][A-Za-z0-9_]+
-NB 0|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-6]
+ID [A-Za-z_][A-Za-z0-9_]*
+NUM ([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-6])
 FILTER [ \t]
+COMMEN (#.*\n)
 
 
 %%
-{FILTER}  {continue;}
-'#'       {continue;}
+{FILTER}  {}
+{COMMEN}  {}
 "\n"      {return SAUT_LIGNE;}
 "ALGO"    {return ALGO;}
 "ENTREE"  {return ENTREE;}
@@ -40,11 +43,11 @@ FILTER [ \t]
 "OU"      {return OU;}
 "ET"      {return ET;}
 "NON"     {return NON;}
+"AFFICHER" {return AFFICHER;}
 {ID}      {return ID;}
 {OP_ARITH}  {return yytext[0];}
-"#"      {}
 
-{NB} {yylval.nb = atoi(yytext); return NB;}
+{NUM} {yylval.nb = atoi(yytext); return NB;}
 .    {fprintf(stderr, "[err lexer] caractere inconnu %c %d\n",yytext[0],yytext[0]);
       return 1;}
 

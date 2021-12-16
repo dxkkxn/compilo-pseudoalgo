@@ -1,7 +1,6 @@
 #include "asa.h"
 
-asa * creer_feuilleNb(int val)
-{
+asa * creer_feuilleNb(int val) {
   asa *p;
 
   if ((p = malloc(sizeof(asa))) == NULL)
@@ -12,8 +11,7 @@ asa * creer_feuilleNb(int val)
   return p;
 }
 
-asa * creer_noeudOp( int ope, asa * p1, asa * p2)
-{
+asa * creer_noeudOp(int ope, asa * p1, asa * p2) {
   asa * p;
 
   if ((p = malloc(sizeof(asa))) == NULL)
@@ -29,8 +27,7 @@ asa * creer_noeudOp( int ope, asa * p1, asa * p2)
 }
 
 
-void free_asa(asa *p)
-{
+void free_asa(asa *p) {
  
   if (!p) return;
   switch (p->type) {
@@ -44,23 +41,21 @@ void free_asa(asa *p)
 }
 
 
-void codegen(asa *p)
-{
-  if (!p) return;
-  switch(p->type) {
-  case typeNb:
-    break;
-  case typeOp:
-    break;
-  default:
-    break;
-  }
+void codegen(asa *p) {
+    if (!p) return;
+    switch(p->type) {
+    case typeNb:
+      break;
+    case typeOp:
+      break;
+    default:
+      break;
+    }
 }
 
 
 
-void yyerror(const char * s)
-{
-  fprintf(stderr, "%s\n", s);
-  exit(0);
+void yyerror(const char * s) {
+    fprintf(stderr, "%s\n", s);
+    exit(0);
 }

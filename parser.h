@@ -62,15 +62,17 @@ extern int yydebug;
     TQ = 268,
     FAIRE = 269,
     FTQ = 270,
-    AFFECT = 271,
-    SUPEGAL = 272,
-    INFEGAL = 273,
-    DIFF = 274,
-    OU = 275,
-    ET = 276,
-    NON = 277,
-    ID = 278,
-    NB = 279
+    AFFICHER = 271,
+    AFFECT = 272,
+    SUPEGAL = 273,
+    INFEGAL = 274,
+    DIFF = 275,
+    OU = 276,
+    ET = 277,
+    NON = 278,
+    ID = 279,
+    NB = 280,
+    MOINS_UN = 281
   };
 #endif
 
@@ -84,7 +86,7 @@ union YYSTYPE
   struct asa * noeud;
  
 
-#line 88 "parser.h"
+#line 90 "parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
