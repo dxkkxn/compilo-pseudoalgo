@@ -7,7 +7,7 @@
 
 #define PILE_MAX 32
 
-typedef struct ts{
+typedef struct ts {
   char *id; // la chaine de car de l'ID
   int adr;  // l'adresse mémoire de l'ID (dans la machine RAM)
   int size; // le nombre de cases mémoires allouées à l'ID

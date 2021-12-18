@@ -6,8 +6,9 @@
 #include <stdlib.h>
 
 #include "ts.h"
+#include "parser.h"
 
-typedef enum {typeNb, typeOp} typeNoeud;
+typedef enum {typeNb, typeOp, typeOpUn, typeOpComp} typeNoeud;
 
 typedef struct {
   int val;
@@ -18,15 +19,18 @@ typedef struct {
   struct asa * noeud[2];
 } noeudOp;
 
-typedef struct asa{
+typedef struct asa {
   typeNoeud type;
   int ninst;
- 
   union {
     feuilleNb nb;
     noeudOp op;
   };
 } asa;
+
+extern int tete ;
+extern int ligne_ram ;
+
 
 // fonction d'erreur utilisée également par Bison
 void yyerror(const char * s);
@@ -37,7 +41,8 @@ void yyerror(const char * s);
  */
 asa * creer_feuilleNb( int value );
 asa * creer_noeudOp( int ope, asa * p1, asa * p2 );
-
+asa * creer_noeudOpComp(int ope, asa * p1, asa * p2);
+asa * creer_noeudOpUn(int ope, asa * p1);
 void free_asa(asa *p);
 
 // produit du code pour la machine RAM à partir de l'arbre abstrait
@@ -45,5 +50,6 @@ void free_asa(asa *p);
 void codegen(asa *p);
 
 extern ts * tsymb;
+extern FILE * out_file;
 
 #endif

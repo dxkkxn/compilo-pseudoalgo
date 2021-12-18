@@ -5,8 +5,7 @@ ts * tsymb = NULL;
 static int mem_offset = 33;
 
 
-void ts_ajouter_id(char *id, int size)
-{
+void ts_ajouter_id(char *id, int size) {
   ts *new = malloc(sizeof(ts));
   new->id = malloc(strlen(id)+1);
   strcpy(new->id, id);

@@ -12,7 +12,7 @@ arc :  $(OBJ)
 parser.h: parser.y
 
 parser.c: parser.y asa.o
-	bison -o $@ -d $<
+	bison -o $@ -d -Wcounterexamples $<
 
 lexer.c: lexer.lex parser.h
 	flex -o  $@ $^

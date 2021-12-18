@@ -1,6 +1,6 @@
-#line 2 "lexer.c"
+#line 1 "lexer.c"
 
-#line 4 "lexer.c"
+#line 3 "lexer.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -522,9 +522,9 @@ char *yytext;
 #include <string.h>
 #include "parser.h" 
   
-#line 526 "lexer.c"
+#line 525 "lexer.c"
 #define YY_NO_INPUT 1
-#line 528 "lexer.c"
+#line 527 "lexer.c"
 
 #define INITIAL 0
 
@@ -741,7 +741,7 @@ YY_DECL
 	{
 #line 20 "lexer.lex"
 
-#line 745 "lexer.c"
+#line 744 "lexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -966,7 +966,7 @@ YY_RULE_SETUP
 #line 54 "lexer.lex"
 ECHO;
 	YY_BREAK
-#line 970 "lexer.c"
+#line 969 "lexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1944,11 +1944,11 @@ void yyfree (void * ptr )
 
 #line 54 "lexer.lex"
 
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -1962,7 +1962,7 @@ void yyfree (void * ptr )
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -1977,8 +1977,9 @@ void yyfree (void * ptr )
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_PARSER_H_INCLUDED
 # define YY_YY_PARSER_H_INCLUDED
@@ -1990,49 +1991,54 @@ void yyfree (void * ptr )
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    SAUT_LIGNE = 258,
-    ALGO = 259,
-    ENTREE = 260,
-    DEBUT = 261,
-    FIN = 262,
-    SI = 263,
-    SINON = 264,
-    ALORS = 265,
-    FSI = 266,
-    VAR = 267,
-    TQ = 268,
-    FAIRE = 269,
-    FTQ = 270,
-    AFFICHER = 271,
-    AFFECT = 272,
-    SUPEGAL = 273,
-    INFEGAL = 274,
-    DIFF = 275,
-    OU = 276,
-    ET = 277,
-    NON = 278,
-    ID = 279,
-    NB = 280,
-    MOINS_UN = 281
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    SAUT_LIGNE = 258,              /* "\n"  */
+    ALGO = 259,                    /* "ALGO"  */
+    ENTREE = 260,                  /* "ENTREE"  */
+    DEBUT = 261,                   /* "DEBUT"  */
+    FIN = 262,                     /* "FIN"  */
+    SI = 263,                      /* "SI"  */
+    SINON = 264,                   /* "SINON"  */
+    ALORS = 265,                   /* "ALORS"  */
+    FSI = 266,                     /* "FSI"  */
+    VAR = 267,                     /* "VAR"  */
+    TQ = 268,                      /* "TQ"  */
+    FAIRE = 269,                   /* "FAIRE"  */
+    FTQ = 270,                     /* "FTQ"  */
+    AFFICHER = 271,                /* "AFFICHER"  */
+    AFFECT = 272,                  /* "<-"  */
+    SUPEGAL = 273,                 /* ">="  */
+    INFEGAL = 274,                 /* "<="  */
+    DIFF = 275,                    /* "!="  */
+    OU = 276,                      /* "OU"  */
+    ET = 277,                      /* "ET"  */
+    NON = 278,                     /* "NON"  */
+    ID = 279,                      /* ID  */
+    NB = 280,                      /* NB  */
+    OP_UN = 281                    /* OP_UN  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 13 "parser.y"
+#line 16 "parser.y"
 
   int nb;
   struct asa * noeud;
  
 
-#line 90 "parser.h"
+#line 96 "parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -2043,7 +2049,9 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
+
 int yyparse (void);
+
 
 #endif /* !YY_YY_PARSER_H_INCLUDED  */
 
