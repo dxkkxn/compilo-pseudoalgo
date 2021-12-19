@@ -10,13 +10,15 @@
   FILE * out_file;
   int tete ;
   int ligne_ram ;
+  char * tmp;
 
 %}
 
-%union{
+%union {
   int nb;
+  char * iden;
   struct asa * noeud;
- };
+};
 
 %define parse.error verbose
 
@@ -52,10 +54,10 @@
 %right AFFECT
 %left OU
 %left ET
+%right NON
 %left '<' '>' '=' SUPEGAL INFEGAL DIFF
 %left '+' '-'
 %left '*' '/' '%'
-%right NON
 %precedence OP_UN // operateur unaire
 %start PROG
 
@@ -65,7 +67,7 @@ PROG : ALGO ID SAUT_LIGNES
        ENTREE LIST_VAR SAUT_LIGNES
        DEBUT
        INSTS
-       FIN SAUT_LIGNES ;
+       FIN SAUT_LIGNES {fprintf(out_file, "STOP\n");}
 
 LIST_VAR    : LIST_VAR ID
             | ID
@@ -80,17 +82,17 @@ INSTS : INSTS INST  {codegen($1); codegen($2);}
       ;
 
 EXP : NB      { $$ = creer_feuilleNb(yylval.nb); }
-    | ID {printf("id");}
+    | ID {$$ = creer_feuilleID(yylval.iden);}
     | '(' EXP ')' { $$ = $2;}
-    | EXP OU EXP {printf("OU");}
-    | EXP ET EXP {printf("ET");}
-    | NON EXP {printf("NON");}
+    | EXP OU EXP { $$ = creer_noeudOpLog(ou, $1, $3);}
+    | EXP ET EXP { $$ = creer_noeudOpLog(et, $1, $3);}
+    | NON EXP { $$ = creer_noeudOpLog(non, $2, NULL);}
     | EXP '<' EXP { $$ = creer_noeudOpComp('<', $1, $3); }
     | EXP '>' EXP { $$ = creer_noeudOpComp('>', $1, $3); }
     | EXP '=' EXP { $$ = creer_noeudOpComp('=', $1, $3); }
-    | EXP SUPEGAL EXP {printf("exp supegal exp");}
-    | EXP INFEGAL EXP {printf("exp supegal exp");}
-    | EXP DIFF EXP {printf("DIFF");}
+    | EXP SUPEGAL EXP { $$ = creer_noeudOpComp(supegal, $1, $3);}
+    | EXP INFEGAL EXP  { $$ = creer_noeudOpComp(infegal, $1, $3);}
+    | EXP DIFF EXP  { $$ = creer_noeudOpComp(diff, $1, $3);}
     | EXP '*' EXP { $$ = creer_noeudOp('*', $1, $3); }
     | EXP '/' EXP { $$ = creer_noeudOp('/', $1, $3); }
     | EXP '%' EXP { $$ = creer_noeudOp('%', $1, $3); }
@@ -100,13 +102,14 @@ EXP : NB      { $$ = creer_feuilleNb(yylval.nb); }
     | '+' EXP %prec OP_UN { $$ = creer_noeudOpUn('+', $2);}
     ;
 
-INST : SAUT_LIGNE {$$= NULL;}
-     | VAR ID {printf("var id saut_ligne");}
-     | ID AFFECT EXP {printf("id affect nb");}
+INST : SAUT_LIGNE {$$ = NULL;}
+     | VAR ID SAUT_LIGNE {ts_ajouter_id(yylval.iden, 1); $$=NULL;}
+     | ID {tmp=yylval.iden;} AFFECT EXP SAUT_LIGNE
+     { $$ = creer_noeudAff(creer_feuilleID(tmp), $4);}
      | SI EXP ALORS INSTS SINON INSTS FSI {printf("si exp alors sinon insts");}
      | SI EXP ALORS INSTS FSI {printf("Si exp alors insts");}
      | TQ EXP FAIRE INSTS FTQ {printf("tq exp faire sinon insts ftq");}
-     | AFFICHER EXP SAUT_LIGNE { printf("afficher"); $$ = $2;}
+     | AFFICHER EXP SAUT_LIGNE { $$ = creer_noeudInst(afficher, $2);}
      | EXP SAUT_LIGNE{ $$ = $1;}
      ;
 %%
@@ -122,7 +125,6 @@ int main( int argc, char * argv[] ) {
   out_file = fopen(argv[2], "w");
   yyin = fopen(argv[1],"r");
   yyparse();
-  fprintf(out_file, "WRITE\nSTOP\n");
   return 0;
 }
 

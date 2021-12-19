@@ -44,8 +44,10 @@ COMMEN (#.*\n)
 "ET"      {return ET;}
 "NON"     {return NON;}
 "AFFICHER" {return AFFICHER;}
-{ID}      {return ID;}
-{OP_ARITH}  {return yytext[0];}
+{ID}      {yylval.iden = calloc(strlen(yytext)+1, sizeof(char));
+           strcpy(yylval.iden, yytext);
+           return ID;}
+{OP_ARITH} {return yytext[0];}
 
 {NUM} {yylval.nb = atoi(yytext); return NB;}
 .    {fprintf(stderr, "[err lexer] caractere inconnu %c %d\n",yytext[0],yytext[0]);

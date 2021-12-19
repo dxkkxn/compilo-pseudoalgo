@@ -1,6 +1,6 @@
-#line 1 "lexer.c"
+#line 2 "lexer.c"
 
-#line 3 "lexer.c"
+#line 4 "lexer.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -522,9 +522,9 @@ char *yytext;
 #include <string.h>
 #include "parser.h" 
   
-#line 525 "lexer.c"
+#line 526 "lexer.c"
 #define YY_NO_INPUT 1
-#line 527 "lexer.c"
+#line 528 "lexer.c"
 
 #define INITIAL 0
 
@@ -741,7 +741,7 @@ YY_DECL
 	{
 #line 20 "lexer.lex"
 
-#line 744 "lexer.c"
+#line 745 "lexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -943,30 +943,32 @@ YY_RULE_SETUP
 case 27:
 YY_RULE_SETUP
 #line 47 "lexer.lex"
-{return ID;}
+{yylval.iden = calloc(strlen(yytext)+1, sizeof(char));
+           strcpy(yylval.iden, yytext);
+           return ID;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 48 "lexer.lex"
+#line 50 "lexer.lex"
 {return yytext[0];}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 50 "lexer.lex"
+#line 52 "lexer.lex"
 {yylval.nb = atoi(yytext); return NB;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 51 "lexer.lex"
+#line 53 "lexer.lex"
 {fprintf(stderr, "[err lexer] caractere inconnu %c %d\n",yytext[0],yytext[0]);
       return 1;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 54 "lexer.lex"
+#line 56 "lexer.lex"
 ECHO;
 	YY_BREAK
-#line 969 "lexer.c"
+#line 972 "lexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1942,9 +1944,9 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 54 "lexer.lex"
+#line 56 "lexer.lex"
 
-/* A Bison parser, made by GNU Bison 3.8.2.  */
+/* A Bison parser, made by GNU Bison 3.7.6.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -2032,11 +2034,11 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 16 "parser.y"
+#line 17 "parser.y"
 
   int nb;
+  char * iden;
   struct asa * noeud;
- 
 
 #line 96 "parser.h"
 
@@ -2049,9 +2051,7 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
-
 int yyparse (void);
-
 
 #endif /* !YY_YY_PARSER_H_INCLUDED  */
 
