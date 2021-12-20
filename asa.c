@@ -122,7 +122,16 @@ asa * creer_noeudOpLog(int ope, asa * p1, asa * p2) {
   return p;
 }
 
-asa * creer_noeudInst(inst_t inst, asa * p1) {
+int count_ninst(node_list * head) {
+  int res = 0;
+  node_list * aux = head;
+  while(aux->next != NULL) {
+    res += aux->tree->ninst;
+    aux = aux->next;
+  }
+  return res;
+}
+asa * creer_noeudInst(inst_t inst, asa * p1, node_list * p2, node_list * p3) {
     asa * p;
 
     if ((p = malloc(sizeof(asa))) == NULL)
@@ -130,14 +139,23 @@ asa * creer_noeudInst(inst_t inst, asa * p1) {
 
     p->type = typeInst;
     p->inst.instr = inst;
-    p->inst.noeud=p1;
+    p->inst.noeud_exp = p1;
     p->ninst = p1->ninst+1;
+    switch (inst) {
+      case Si : case Tq:
+        break;
+      case SiSinon:
+        p->inst.node_insts[0]= *p2;
+        p->inst.node_insts[1]= *p3;
+        break;
+      default:
+        break;
+    }
 
     return p;
 }
 
 void free_asa(asa *p) {
-
   if (!p) return;
   switch (p->type) {
     case typeOp:
@@ -154,7 +172,7 @@ void codegen(asa *p) {
     if (!p) {
       printf ("!p error\n"); return;
     }
-    printf("%d\n", p->type);
+    printf("no error should write %d\n", p->type);
     switch(p->type) {
       case typeNb:
           fprintf(out_file, "LOAD #%d\n", p->nb.val);
@@ -317,10 +335,13 @@ void codegen(asa *p) {
         break;
       case typeInst:
           switch(p->inst.instr) {
-              case afficher:
-                codegen(p->inst.noeud);
+              case Afficher:
+                codegen(p->inst.noeud_exp);
                 fprintf(out_file, "WRITE \n"); ligne_ram++;
                 break;
+              default:
+                break;
+
           }
           break;
       case typeAff:
@@ -331,6 +352,43 @@ void codegen(asa *p) {
       default:
         break;
     }
+}
+
+void codegen_list_insts(node_list * head) {
+  node_list * aux = head;
+  while(aux->next != NULL) {
+    codegen(head->tree);
+    aux = aux->next;
+  }
+  printf("SUCCESS\n");
+}
+
+node_list * extend(node_list * l1, node_list * l2) {
+  if (l1 == NULL) {
+    return l2;
+  }
+  if (l2 == NULL) {
+    return l1;
+  }
+  node_list * aux = l1;
+  while(aux->next != NULL) {
+    aux = aux->next;
+  }
+  aux->next = l2;
+  return l1;
+}
+
+node_list * creer_node_list(asa * tree) {
+  if (tree) {
+    node_list * res;
+    if ((res = malloc(sizeof(node_list))) == NULL)
+      yyerror("echec allocation mémoire");
+
+    res->next = NULL;
+    res->tree = tree;
+    return res;
+  }
+  return NULL;
 }
 
 void yyerror(const char * s) {

@@ -10,7 +10,9 @@
   FILE * out_file;
   int tete ;
   int ligne_ram ;
-  char * tmp;
+  asa * tmp;
+  asa * tab[1024];
+  int index_tab = 0;
 
 %}
 
@@ -18,6 +20,7 @@
   int nb;
   char * iden;
   struct asa * noeud;
+  struct node_list * el_list;
 };
 
 %define parse.error verbose
@@ -48,8 +51,8 @@
 
 
 %token <nb> NB
-%type <noeud> EXP INST INSTS
-//%type <noeud> INSTS
+%type <noeud> EXP INST
+%type <el_list> INSTS
 
 %right AFFECT
 %left OU
@@ -67,7 +70,7 @@ PROG : ALGO ID SAUT_LIGNES
        ENTREE LIST_VAR SAUT_LIGNES
        DEBUT
        INSTS
-       FIN SAUT_LIGNES {fprintf(out_file, "STOP\n");}
+       FIN SAUT_LIGNES {codegen_list_insts($8); fprintf(out_file, "STOP\n");}
 
 LIST_VAR    : LIST_VAR ID
             | ID
@@ -77,8 +80,8 @@ SAUT_LIGNES : %empty
             | SAUT_LIGNES SAUT_LIGNE
             ;
 
-INSTS : INSTS INST  {codegen($1); codegen($2);}
-      | INST  {codegen($1);}
+INSTS : INST INSTS { $$ = extend(creer_node_list($1), $2);}
+      | INST   { $$ = creer_node_list($1);}
       ;
 
 EXP : NB      { $$ = creer_feuilleNb(yylval.nb); }
@@ -104,12 +107,12 @@ EXP : NB      { $$ = creer_feuilleNb(yylval.nb); }
 
 INST : SAUT_LIGNE {$$ = NULL;}
      | VAR ID SAUT_LIGNE {ts_ajouter_id(yylval.iden, 1); $$=NULL;}
-     | ID {tmp=yylval.iden;} AFFECT EXP SAUT_LIGNE
-     { $$ = creer_noeudAff(creer_feuilleID(tmp), $4);}
-     | SI EXP ALORS INSTS SINON INSTS FSI {printf("si exp alors sinon insts");}
-     | SI EXP ALORS INSTS FSI {printf("Si exp alors insts");}
-     | TQ EXP FAIRE INSTS FTQ {printf("tq exp faire sinon insts ftq");}
-     | AFFICHER EXP SAUT_LIGNE { $$ = creer_noeudInst(afficher, $2);}
+     | ID {tmp=creer_feuilleID(yylval.iden);} AFFECT EXP SAUT_LIGNE
+     { $$ = creer_noeudAff(tmp, $4);}
+     | SI EXP ALORS INSTS SINON INSTS FSI {$$ = creer_noeudInst(SiSinon,$2, $4, $6);}
+     | SI EXP ALORS INSTS FSI {$$ = creer_noeudInst(Si, $2, $4, NULL);}
+     | TQ EXP FAIRE INSTS FTQ {$$ = creer_noeudInst(Tq, $2, $4, NULL);}
+     | AFFICHER EXP SAUT_LIGNE { $$ = creer_noeudInst(Afficher, $2, NULL, NULL);}
      | EXP SAUT_LIGNE{ $$ = $1;}
      ;
 %%

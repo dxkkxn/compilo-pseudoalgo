@@ -12,7 +12,7 @@ typedef enum {typeNb, typeOp, typeOpUn, typeOpComp, typeInst,
               typeOpLog, typeAff, typeID} typeNoeud;
 enum {diff, supegal, infegal};
 enum {non, et, ou};
-typedef enum {afficher} inst_t;
+typedef enum {Afficher, SiSinon, Si, Tq} inst_t;
 
 typedef struct {
   int val;
@@ -23,9 +23,16 @@ typedef struct {
   struct asa * noeud[2];
 } noeudOp;
 
+
+typedef struct node_list {
+   struct asa * tree;
+   struct node_list * next;
+} node_list;
+
 typedef struct {
   inst_t instr;
-  struct asa * noeud;
+  struct asa * noeud_exp;
+  struct node_list node_insts[2];
 } noeudInst;
 
 typedef struct {
@@ -48,10 +55,11 @@ typedef struct asa {
   };
 } asa;
 
-
 extern int tete ;
 extern int ligne_ram ;
 
+node_list * extend(node_list * l1, node_list * l2);
+node_list * creer_node_list(asa * tree);
 
 // fonction d'erreur utilisée également par Bison
 void yyerror(const char * s);
@@ -65,7 +73,7 @@ asa * creer_noeudOp(int ope, asa * p1, asa * p2);
 asa * creer_noeudOpComp(int ope, asa * p1, asa * p2);
 asa * creer_noeudOpUn(int ope, asa * p1);
 
-asa * creer_noeudInst(inst_t inst, asa * p1);
+asa * creer_noeudInst(inst_t inst, asa * p1, node_list * p2, node_list * p3);
 asa * creer_noeudOpLog(int ope, asa * p1, asa * p2);
 void free_asa(asa *p);
 asa * creer_noeudAff(asa * p1, asa * p2);
@@ -74,6 +82,8 @@ asa * creer_feuilleID(char * iden);
 // produit du code pour la machine RAM à partir de l'arbre abstrait
 // ET de la table de symbole
 void codegen(asa *p);
+
+void codegen_list_insts(node_list * head);
 
 extern ts * tsymb;
 extern FILE * out_file;
