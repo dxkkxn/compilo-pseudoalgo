@@ -3,12 +3,13 @@
 ts * tsymb = NULL;
 static int mem_offset = 33;
 
-void ts_ajouter_id(char *id, int size) {
+void ts_ajouter_id(char *id, int size, bool est_tab) {
   ts * new = malloc(sizeof(ts));
   new->id = malloc(strlen(id)+1);
   strcpy(new->id, id);
   new->adr = mem_offset;
   new->size = size;
+  new->est_tab = est_tab;
   mem_offset += size;
   new->next = tsymb;
   tsymb = new;
@@ -22,7 +23,7 @@ ts* ts_retrouver_id(char *id) {
     }
     t = t->next;
   }
-  printf("non trouve\n");
+  printf("%s non trouve\n", id);
   return (ts*)0;
 }
 

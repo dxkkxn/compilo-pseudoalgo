@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define PILE_MAX 32
 
@@ -11,13 +12,14 @@ typedef struct ts {
   char *id; // la chaine de car de l'ID
   int adr;  // l'adresse mémoire de l'ID (dans la machine RAM)
   int size; // le nombre de cases mémoires allouées à l'ID
+  bool est_tab;
   struct ts *next;
 } ts;   
 
 extern ts * tsymb;
 
 // ajoute l'identificateur <id> de taille <size> à la table des symboles
-void ts_ajouter_id(char *id, int size);
+void ts_ajouter_id(char *id, int size, bool est_tab);
 // retourne un pointeur vers le noeud contenant l'id <id>, 0 sinon
 ts * ts_retrouver_id(char *id);
 // libere la mémoire de la table de symbole

@@ -1,0 +1,12 @@
+ALGO max
+ENTREE a b
+DEBUT
+    VAR max
+    SI a < b ALORS
+       max <- b
+    SINON
+       max <-a
+    FSI
+    AFFICHER max
+    AFFICHER 3<1
+FIN

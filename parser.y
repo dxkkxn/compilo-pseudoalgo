@@ -1,18 +1,18 @@
 %{
   #include <stdio.h>
   #include <ctype.h>
-  #include <unistd.h>
-  
-  #include "asa.h"
-  #include "ts.h"
+    #include <unistd.h>
 
-  extern int yylex();
-  FILE * out_file;
-  int tete ;
-  int ligne_ram ;
-  asa * tmp;
-  asa * tab[1024];
-  int index_tab = 0;
+    #include "asa.h"
+    #include "ts.h"
+
+    extern int yylex();
+    FILE * out_file;
+    int tete ;
+    int ligne_ram ;
+    asa * tmp;
+    node_list * list = NULL;
+  char * temp;
 
 %}
 
@@ -46,7 +46,7 @@
 %token OU "OU"
 %token ET "ET"
 %token NON "NON"
-%token ID
+%token <iden> ID
 
 
 
@@ -67,25 +67,39 @@
 %%
 
 PROG : ALGO ID SAUT_LIGNES
-       ENTREE LIST_VAR SAUT_LIGNES
+       ENTREE VAR_ENTREE SAUT_LIGNES
        DEBUT
        INSTS
-       FIN SAUT_LIGNES {codegen_list_insts($8); fprintf(out_file, "STOP\n");}
+       FIN SAUT_LIGNES {codegen_list_insts($8); fprintf(out_file, "STOP\n");};
 
-LIST_VAR    : LIST_VAR ID
-            | ID
+VAR_ENTREE  : VAR_ENTREE ID {ts_ajouter_id(yylval.iden, 1, false);
+                             codegen_entree(yylval.iden);}
+            | VAR_ENTREE ID '['NB']' {ts_ajouter_id($2, $4, true);
+                                      codegen_entree($2);}
+            | ID {ts_ajouter_id($1, 1, false);
+                  codegen_entree($1);}
+            | ID '['NB']' {ts_ajouter_id($1, $3, true); codegen_entree($1);}
             ;
+
+LIST_ID : LIST_ID ID  { ts_ajouter_id($2, 1, false);}
+        | LIST_ID ID '['NB']' {ts_ajouter_id($2, $4, true);}
+        | ID { ts_ajouter_id($1, 1, false); }
+        | ID '['NB']' {ts_ajouter_id($1, $3, true);}
+        ;
+
 
 SAUT_LIGNES : %empty
             | SAUT_LIGNES SAUT_LIGNE
             ;
 
-INSTS : INST INSTS { $$ = extend(creer_node_list($1), $2);}
-      | INST   { $$ = creer_node_list($1);}
+INSTS : INSTS INST   { $$ = extend($1, creer_node_list($2));}
+      | INST {$$ = creer_node_list($1);}
       ;
 
+
 EXP : NB      { $$ = creer_feuilleNb(yylval.nb); }
-    | ID {$$ = creer_feuilleID(yylval.iden);}
+    | ID      {$$ = creer_feuilleID(yylval.iden);}
+    | ID '['EXP']' { $$ = creer_feuilleIDTab($1, $3);}
     | '(' EXP ')' { $$ = $2;}
     | EXP OU EXP { $$ = creer_noeudOpLog(ou, $1, $3);}
     | EXP ET EXP { $$ = creer_noeudOpLog(et, $1, $3);}
@@ -106,14 +120,18 @@ EXP : NB      { $$ = creer_feuilleNb(yylval.nb); }
     ;
 
 INST : SAUT_LIGNE {$$ = NULL;}
-     | VAR ID SAUT_LIGNE {ts_ajouter_id(yylval.iden, 1); $$=NULL;}
-     | ID {tmp=creer_feuilleID(yylval.iden);} AFFECT EXP SAUT_LIGNE
-     { $$ = creer_noeudAff(tmp, $4);}
-     | SI EXP ALORS INSTS SINON INSTS FSI {$$ = creer_noeudInst(SiSinon,$2, $4, $6);}
-     | SI EXP ALORS INSTS FSI {$$ = creer_noeudInst(Si, $2, $4, NULL);}
-     | TQ EXP FAIRE INSTS FTQ {$$ = creer_noeudInst(Tq, $2, $4, NULL);}
-     | AFFICHER EXP SAUT_LIGNE { $$ = creer_noeudInst(Afficher, $2, NULL, NULL);}
-     | EXP SAUT_LIGNE{ $$ = $1;}
+     | VAR ID AFFECT EXP SAUT_LIGNE {
+        ts_ajouter_id($2, 1, false);
+        $$ = creer_noeudAff(creer_feuilleID($2), $4);}
+     | VAR LIST_ID SAUT_LIGNE {$$=NULL;};
+     | ID AFFECT EXP SAUT_LIGNE { $$ = creer_noeudAff(creer_feuilleID($1), $3);}
+     | ID '['EXP']' AFFECT EXP SAUT_LIGNE
+     { $$ = creer_noeudAffTab($1, $3, $6);}
+     | SI EXP ALORS INSTS SINON INSTS FSI {$$ = creer_noeudInst(si_sinon,$2, $4, $6);}
+     | SI EXP ALORS INSTS FSI {$$ = creer_noeudInst(si, $2, $4, NULL);}
+     | TQ EXP FAIRE INSTS FTQ {$$ = creer_noeudInst(tq, $2, $4, NULL);}
+     | AFFICHER EXP SAUT_LIGNE {$$ = creer_noeudInst(afficher, $2, NULL, NULL);}
+     | EXP SAUT_LIGNE { $$ = $1;}
      ;
 %%
 int main( int argc, char * argv[] ) {

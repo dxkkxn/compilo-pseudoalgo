@@ -1,0 +1,30 @@
+ALGO tri_selection
+ENTREE tab[4]
+DEBUT
+  VAR N <- 4
+  VAR i <- 0
+  VAR min j tmp min_i
+  TQ i < N FAIRE
+     j <- i
+     min_i <- i
+     TQ j < N FAIRE
+        SI tab[min_i] > tab[j] ALORS
+           min_i <- j
+        FSI
+        j <- j + 1
+     FTQ
+     # echanger
+     tmp <- tab[i]
+     tab[i] <- tab[min_i]
+     tab[min_i] <- tmp
+     i <- i + 1
+  FTQ
+
+# afficher le tableau
+  i <- 0
+  TQ i < 4 FAIRE
+    AFFICHER tab[i]
+    i <- i + 1
+  FTQ
+
+FIN

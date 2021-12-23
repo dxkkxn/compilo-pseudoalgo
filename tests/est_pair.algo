@@ -1,0 +1,9 @@
+ALGO est_pair
+ENTREE  n
+DEBUT
+  SI n %  2 = 0 ALORS
+     AFFICHER 1
+  SINON
+     AFFICHER 0
+  FSI
+FIN

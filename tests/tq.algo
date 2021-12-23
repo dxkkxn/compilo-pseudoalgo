@@ -1,0 +1,13 @@
+ALGO tq_test
+ENTREE  n
+DEBUT
+  VAR bool
+  bool <- 0
+  TQ bool < 10 FAIRE
+     SI bool % 2 != 0 ALORS
+        AFFICHER bool
+     FSI
+     bool <- bool + 1
+  FTQ
+  AFFICHER bool
+FIN

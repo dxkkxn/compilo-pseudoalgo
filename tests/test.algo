@@ -5,8 +5,6 @@ ALGO Syracuse
 ENTREE  n
 DEBUT
   VAR iteration
-  VAR x
-#  x <- -5
   iteration <- 0
   TQ ( n != 1) ET ( n != 0) FAIRE
     SI ( n % 2) = 0 ALORS

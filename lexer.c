@@ -404,7 +404,7 @@ static const YY_CHAR yy_ec[256] =
        16,   17,    1,    1,   18,   19,   20,   21,   22,   23,
        24,   25,   26,   27,   27,   28,   27,   29,   30,   27,
        31,   32,   33,   34,   35,   36,   27,   27,   27,   27,
-        1,    1,    1,    1,   27,    1,   27,   27,   27,   27,
+        6,    1,    6,    1,   27,    1,   27,   27,   27,   27,
 
        27,   27,   27,   27,   27,   27,   27,   27,   27,   27,
        27,   27,   27,   27,   27,   27,   27,   27,   27,   27,
@@ -739,7 +739,7 @@ YY_DECL
 		}
 
 	{
-#line 20 "lexer.lex"
+#line 19 "lexer.lex"
 
 #line 745 "lexer.c"
 
@@ -810,162 +810,162 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 21 "lexer.lex"
+#line 20 "lexer.lex"
 {}
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 22 "lexer.lex"
+#line 21 "lexer.lex"
 {}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 23 "lexer.lex"
+#line 22 "lexer.lex"
 {return SAUT_LIGNE;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 24 "lexer.lex"
+#line 23 "lexer.lex"
 {return ALGO;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 25 "lexer.lex"
+#line 24 "lexer.lex"
 {return ENTREE;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 26 "lexer.lex"
+#line 25 "lexer.lex"
 {return DEBUT;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 27 "lexer.lex"
+#line 26 "lexer.lex"
 {return FIN;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 28 "lexer.lex"
+#line 27 "lexer.lex"
 {return SI;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 29 "lexer.lex"
+#line 28 "lexer.lex"
 {return ALORS;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 30 "lexer.lex"
+#line 29 "lexer.lex"
 {return SINON;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 31 "lexer.lex"
+#line 30 "lexer.lex"
 {return FSI;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 32 "lexer.lex"
+#line 31 "lexer.lex"
 {return VAR;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 33 "lexer.lex"
+#line 32 "lexer.lex"
 {return TQ;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 34 "lexer.lex"
+#line 33 "lexer.lex"
 {return FAIRE;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 35 "lexer.lex"
+#line 34 "lexer.lex"
 {return FTQ;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 36 "lexer.lex"
+#line 35 "lexer.lex"
 {return DIFF;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 37 "lexer.lex"
+#line 36 "lexer.lex"
 {return SUPEGAL;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 38 "lexer.lex"
+#line 37 "lexer.lex"
 {return INFEGAL;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 39 "lexer.lex"
+#line 38 "lexer.lex"
 {return yytext[0];}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 40 "lexer.lex"
+#line 39 "lexer.lex"
 {return yytext[0];}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 41 "lexer.lex"
+#line 40 "lexer.lex"
 {return yytext[0];}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 42 "lexer.lex"
+#line 41 "lexer.lex"
 {return AFFECT;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 43 "lexer.lex"
+#line 42 "lexer.lex"
 {return OU;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 44 "lexer.lex"
+#line 43 "lexer.lex"
 {return ET;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 45 "lexer.lex"
+#line 44 "lexer.lex"
 {return NON;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 46 "lexer.lex"
+#line 45 "lexer.lex"
 {return AFFICHER;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 47 "lexer.lex"
+#line 46 "lexer.lex"
 {yylval.iden = calloc(strlen(yytext)+1, sizeof(char));
            strcpy(yylval.iden, yytext);
            return ID;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 50 "lexer.lex"
+#line 49 "lexer.lex"
 {return yytext[0];}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 52 "lexer.lex"
+#line 51 "lexer.lex"
 {yylval.nb = atoi(yytext); return NB;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 53 "lexer.lex"
+#line 52 "lexer.lex"
 {fprintf(stderr, "[err lexer] caractere inconnu %c %d\n",yytext[0],yytext[0]);
       return 1;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 56 "lexer.lex"
+#line 55 "lexer.lex"
 ECHO;
 	YY_BREAK
 #line 972 "lexer.c"
@@ -1944,7 +1944,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 56 "lexer.lex"
+#line 55 "lexer.lex"
 
 /* A Bison parser, made by GNU Bison 3.7.6.  */
 

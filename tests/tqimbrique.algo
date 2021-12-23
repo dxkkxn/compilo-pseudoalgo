@@ -1,0 +1,15 @@
+ALGO tq_test
+ENTREE  n
+DEBUT
+  VAR j x t
+  VAR i <- 0
+  TQ i < 10 FAIRE
+    j <- 0
+    TQ j < 10 FAIRE
+       AFFICHER i
+       AFFICHER j
+       j <- j + 1
+    FTQ
+    i <- i + 1
+  FTQ
+FIN

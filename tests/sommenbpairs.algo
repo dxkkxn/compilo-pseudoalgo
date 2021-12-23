@@ -1,0 +1,15 @@
+ALGO sommepairs_test
+ENTREE  n
+DEBUT
+  VAR res
+  VAR i
+  res <- 0
+  i <- 0
+  TQ i <= n FAIRE
+     SI i % 2 = 0 ALORS
+        res <- res + i
+     FSI
+     i <- i + 1
+  FTQ
+  AFFICHER res
+FIN
