@@ -18,7 +18,7 @@ lexer.c: lexer.lex parser.h
 	flex -o  $@ $^
 
 clean:
-	rm -rf *~ *.o
+	rm -rf *~ *.o *.ram
 tests:
 	./arc tests/sommenbpairs.algo -o snbp.ram
 	./arc tests/tri_selection.algo -o tri_sel.ram
