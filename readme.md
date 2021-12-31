@@ -42,6 +42,14 @@ il se limite a generer un code avec N lectures et N stockages a la suite.
 On a du creer une list chaines simple pour gerer toutes les instructions 
 lorsque elles sont imbriques dans un structure conditionelle
 
+Une petite optimisation a ete fait aussi lors l'evaluation d'expressions logiques
+avec un ET ou un OU pour s'assimiler aux reste des langages de programation.
+Ex:
+```
+exp_1 ET exp_2
+exp_1 OU exp_2
+```
+Pour l'ET Lors que exp_1 est fausse on evalue pas exp2 et inversement pour l'OU
 
 ## Exemples
 Nous fournisons une serie de examples dans le fichier il suffit d'executer
