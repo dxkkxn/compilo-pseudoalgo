@@ -1,96 +1,14 @@
 #include "asa.h"
 #include "ts.h"
 
-
+char error[120];
 asa * creer_feuilleNb(int val) {
   asa *p;
-  printf("nb %d\n", val);
   if ((p = malloc(sizeof(asa))) == NULL)
     yyerror("echec allocation mémoire");
   p->ninst = 1;
   p->type = typeNb;
   p->nb.val = val;
-  return p;
-}
-
-asa * creer_feuilleIDTab(char * iden, asa * i) {
-  ts * ts_id = ts_retrouver_id(iden);
-  if (ts_id->est_tab == false)
-    yyerror("[ERROR] Variable n'est pas un tableau");
-  asa *p;
-  if ((p = malloc(sizeof(asa))) == NULL)
-    yyerror("echec allocation mémoire");
-  p->ninst = 3+i->ninst ;
-  p->type = typeIDTab;
-  p->id_tab.ts_id = ts_id;
-  p->id_tab.index = i;
-  if (p->id.ts_id == NULL) {
-    yyerror("[ERROR] Variable non declare");
- }
-  return p;
-}
-
-asa * creer_noeudAffTab(char * iden, asa * index,  asa * exp) {
-  asa * p;
-  ts * ts_id = ts_retrouver_id(iden);
-  if (ts_id->est_tab == false)
-    yyerror("[ERROR] Variable n'est pas un tableau");
-
-  if ((p = malloc(sizeof(asa))) == NULL)
-    yyerror("echec allocation mémoire");
-
-  p->type = typeAffTab;
-  p->ninst = exp->ninst+index->ninst+3;
-  p->aff_tab.ts_id = ts_id;
-  p->aff_tab.index = index;
-  p->aff_tab.exp = exp;
-  return p;
-}
-
-asa * creer_feuilleID(char * iden) {
-  asa *p;
-  if ((p = malloc(sizeof(asa))) == NULL)
-    yyerror("echec allocation mémoire");
-  p->ninst = 1;
-  p->type = typeID;
-  p->id.ts_id = ts_retrouver_id(iden);
-  if (p->id.ts_id == NULL) {
-    yyerror("[ERROR] Variable non declare");
- }
-  return p;
-}
-
-asa * creer_noeudAff(asa * p1, asa * p2) {
-  asa * p;
-
-  if ((p = malloc(sizeof(asa))) == NULL)
-    yyerror("echec allocation mémoire");
-
-  p->type = typeAff;
-  p->aff.noeud[0]= p1;
-  p->aff.noeud[1]= p2;
-  if (detect_inc(p) || detect_dec(p)){
-    p->ninst = 1;
-  } else {
-    p->ninst = p2->ninst+1;
-  }
-  return p;
-}
-
-asa * creer_noeudOpUn(int ope, asa * p1) {
-  asa * p;
-
-  if ((p = malloc(sizeof(asa))) == NULL)
-    yyerror("echec allocation mémoire");
-
-  p->type = typeOpUn;
-  p->op.ope = ope;
-  p->op.noeud[0]=p1;
-  p->op.noeud[1]=NULL;
-  p->ninst = p1->ninst;
-  if (ope == '-') {
-    p->ninst += 1;
-  }
   return p;
 }
 
@@ -139,6 +57,57 @@ asa * creer_noeudOpComp(int ope, asa * p1, asa * p2) {
   return p;
 }
 
+asa * creer_noeudOpUn(int ope, asa * p1) {
+  asa * p;
+
+  if ((p = malloc(sizeof(asa))) == NULL)
+    yyerror("echec allocation mémoire");
+
+  p->type = typeOpUn;
+  p->op.ope = ope;
+  p->op.noeud[0]=p1;
+  p->op.noeud[1]=NULL;
+  p->ninst = p1->ninst;
+  if (ope == '-') {
+    p->ninst += 1;
+  }
+  return p;
+}
+
+asa * creer_noeudInst(inst_t inst, asa * p1, node_list * p2, node_list * p3) {
+    asa * p;
+
+    if ((p = malloc(sizeof(asa))) == NULL)
+      yyerror("echec allocation mémoire");
+
+    p->type = typeInst;
+    p->inst.instr = inst;
+    p->inst.noeud_exp = p1;
+    p->ninst = p1->ninst;
+    switch (inst) {
+      case si :
+        p->ninst += count_ninst(p2) +1;
+        p->inst.node_insts[0]= p2;
+        p->inst.node_insts[1]= NULL;
+        break;
+      case tq:
+        p->ninst += count_ninst(p2)+2;
+        p->inst.node_insts[0]= p2;
+        break;
+      case afficher:
+        p->ninst += 1;
+        break;
+      case si_sinon:
+        p->inst.node_insts[0]= p2;
+        p->inst.node_insts[1]= p3;
+        p->ninst += count_ninst(p2)+count_ninst(p3)+2;
+        break;
+      default:
+        break;
+    }
+    return p;
+}
+
 asa * creer_noeudOpLog(int ope, asa * p1, asa * p2) {
   asa * p;
 
@@ -168,138 +137,112 @@ asa * creer_noeudOpLog(int ope, asa * p1, asa * p2) {
   return p;
 }
 
-int count_ninst(node_list * head) {
-  int res = 0;
-  node_list * aux = head;
-  while(aux != NULL) {
-    res += aux->tree->ninst;
-    aux = aux->next;
+asa * creer_noeudAff(asa * p1, asa * p2) {
+  asa * p;
+
+  if ((p = malloc(sizeof(asa))) == NULL)
+    yyerror("echec allocation mémoire");
+
+  p->type = typeAff;
+  p->aff.noeud[0]= p1;
+  p->aff.noeud[1]= p2;
+  if (detect_inc(p) || detect_dec(p)){
+    p->ninst = 1;
+  } else {
+    p->ninst = p2->ninst+1;
   }
-  return res;
+  return p;
 }
 
-asa * creer_noeudInst(inst_t inst, asa * p1, node_list * p2, node_list * p3) {
-    asa * p;
-
-    if ((p = malloc(sizeof(asa))) == NULL)
-      yyerror("echec allocation mémoire");
-
-    p->type = typeInst;
-    p->inst.instr = inst;
-    p->inst.noeud_exp = p1;
-    p->ninst = p1->ninst;
-    switch (inst) {
-      case si :
-        p->ninst += count_ninst(p2) +1;
-        p->inst.node_insts[0]= p2;
-        break;
-      case tq:
-        p->ninst += count_ninst(p2)+2;
-        p->inst.node_insts[0]= p2;
-        break;
-      case afficher:
-        p->ninst += 1;
-        break;
-      case si_sinon:
-        p->inst.node_insts[0]= p2;
-        p->inst.node_insts[1]= p3;
-        p->ninst += count_ninst(p2)+count_ninst(p3)+2;
-        break;
-      default:
-        break;
-    }
-    return p;
-}
-
-bool detect_const(asa * arbre_op) {
-  assert(arbre_op->type == typeOp);
-  bool detected = false;
-  if (arbre_op->op.noeud[0]->type == typeNb
-      || arbre_op->op.noeud[1]->type == typeNb) {
-      detected = true;
-    }
-  return detected;
-}
-
-bool detect_inc(asa * arbre_aff) {
-  assert(arbre_aff->type == typeAff);
-  asa * iden = arbre_aff->aff.noeud[0];
-  assert(iden->type == typeID);
-  bool detected = false;
-  if (arbre_aff->aff.noeud[1]->type == typeOp) {
-    asa * arbre_op = arbre_aff->aff.noeud[1];
-    if (arbre_op->op.ope == '+'
-        && (arbre_op->op.noeud[0]->type == typeID
-           || arbre_op->op.noeud[1]->type == typeID)
-        && (arbre_op->op.noeud[0]->type == typeNb
-            || arbre_op->op.noeud[1]->type == typeNb))
-      {
-
-        asa * iden_op ;
-        asa * nb;
-        if (arbre_op->op.noeud[0]->type == typeID)  {
-          iden_op = arbre_op->op.noeud[0];
-          nb = arbre_op->op.noeud[1];
-        }
-        if (arbre_op->op.noeud[1]->type == typeID)  {
-          iden_op = arbre_op->op.noeud[1];
-          nb = arbre_op->op.noeud[0];
-        }
-        if (iden_op->id.ts_id == iden->id.ts_id && nb->nb.val == 1)
-          detected = true;
-      }
+asa * creer_noeudAffTab(char * iden, asa * index,  asa * exp) {
+  asa * p;
+  ts * ts_id = ts_retrouver_id(iden);
+  if (ts_id->est_tab == false) {
+    sprintf(error, "[ERROR] La variable \"%s\" n'est pas un tableau", iden);
+    yyerror(error);
   }
-  return detected;
+
+  if ((p = malloc(sizeof(asa))) == NULL)
+    yyerror("echec allocation mémoire");
+
+  p->type = typeAffTab;
+  p->ninst = exp->ninst+index->ninst+3;
+  p->aff_tab.ts_id = ts_id;
+  p->aff_tab.index = index;
+  p->aff_tab.exp = exp;
+  return p;
 }
 
-bool detect_dec(asa * arbre_aff) {
-  assert(arbre_aff->type == typeAff);
-  asa * iden = arbre_aff->aff.noeud[0];
-  assert(iden->type == typeID);
-  bool detected = false;
-  if (arbre_aff->aff.noeud[1]->type == typeOp) {
-    asa * arbre_op = arbre_aff->aff.noeud[1];
-    if (arbre_op->op.ope == '-'
-        && (arbre_op->op.noeud[0]->type == typeID
-           || arbre_op->op.noeud[1]->type == typeID)
-        && (arbre_op->op.noeud[0]->type == typeNb
-            || arbre_op->op.noeud[1]->type == typeNb))
-      {
-
-        asa * iden_op ;
-        asa * nb;
-        if (arbre_op->op.noeud[0]->type == typeID)  {
-          iden_op = arbre_op->op.noeud[0];
-          nb = arbre_op->op.noeud[1];
-        }
-        if (arbre_op->op.noeud[1]->type == typeID)  {
-          iden_op = arbre_op->op.noeud[1];
-          nb = arbre_op->op.noeud[0];
-        }
-        if (iden_op->id.ts_id == iden->id.ts_id && nb->nb.val == 1)
-          detected = true;
-      }
+asa * creer_feuilleID(char * iden) {
+  asa *p;
+  if ((p = malloc(sizeof(asa))) == NULL)
+    yyerror("echec allocation mémoire");
+  p->ninst = 1;
+  p->type = typeID;
+  p->id.ts_id = ts_retrouver_id(iden);
+  if (p->id.ts_id == NULL) {
+    ts_print();
+    sprintf(error, "[ERROR] La variable \"%s\" n'a pas ete' declare' ", iden);
+    yyerror(error);
   }
-  return detected;
+  return p;
 }
 
-bool detect_comp_iden(asa * arbre_comp) {
-  bool detect = false;
-  if (arbre_comp->op.ope == '<' && arbre_comp->op.noeud[0]->type == typeID
-      && arbre_comp->op.noeud[1]->type == typeID) {
-    detect = true;
+asa * creer_feuilleIDTab(char * iden, asa * i) {
+  ts * ts_id = ts_retrouver_id(iden);
+  if (ts_id->est_tab == false) {
+    sprintf(error, "[ERROR] La variable \"%s\" n'est pas un tableau", iden);
+    yyerror(error);
   }
-  return detect;
+  asa *p;
+  if ((p = malloc(sizeof(asa))) == NULL)
+    yyerror("echec allocation mémoire");
+  p->ninst = 3+i->ninst ;
+  p->type = typeIDTab;
+  p->id_tab.ts_id = ts_id;
+  p->id_tab.index = i;
+  if (p->id.ts_id == NULL) {
+    sprintf(error, "[ERROR] La variable \"%s\" n'a pas ete' declare' ", iden);
+    yyerror(error);
+ }
+  return p;
 }
 
 void free_asa(asa *p) {
   if (!p) return;
   switch (p->type) {
-    case typeOp:
+    case typeOp: case typeOpComp: case typeOpLog:
       free_asa(p->op.noeud[0]);
       free_asa(p->op.noeud[1]);
       break;
-    default: break;
+    case typeNb:
+      break;
+    case typeOpUn:
+      free(p->op.noeud[0]);
+      break;
+    case typeInst:
+      switch(p->inst.instr) {
+        case si_sinon:
+          free_list_insts(p->inst.node_insts[1]);
+        case tq: case si:
+          free_list_insts(p->inst.node_insts[0]);
+        case afficher:
+          free_asa(p->inst.noeud_exp);
+      }
+      break;
+    case typeAff:
+      free_asa(p->aff.noeud[0]);
+      free_asa(p->aff.noeud[1]);
+      break;
+    case typeID:
+      break;
+    case typeIDTab:
+      free_asa(p->id_tab.index);
+      break;
+    case typeAffTab:
+      free_asa(p->aff_tab.index);
+      free_asa(p->aff_tab.exp);
+      break;
   }
   free(p);
 }
@@ -307,11 +250,9 @@ void free_asa(asa *p) {
 void codegen(asa *p) {
     int temp;
     int prec_gen_code_exp ;
-    printf("codegen\n");
     if (!p) {
       printf ("!p error\n"); return;
     }
-    printf("no error should write %d\n", p->type);
     switch(p->type) {
       case typeNb:
           fprintf(out_file, "LOAD #%d\n", p->nb.val);
@@ -551,7 +492,7 @@ void codegen(asa *p) {
                 codegen_list_insts(p->inst.node_insts[0]);
                 fprintf(out_file, "JUMP %d\n", prec_gen_code_exp);ligne_ram++;
                 break;
-              
+
               default:
                 break;
 
@@ -586,34 +527,124 @@ void codegen(asa *p) {
     }
 }
 
+void main_codegen(node_list * head) {
+  codegen_list_insts(head);
+  fprintf(out_file, "STOP\n");
+  free_list_insts(head);
+  ts_free_table(tsymb);
+  printf("COMPILED SUCCESSFULLY\n");
+}
+
 void codegen_list_insts(node_list * head) {
   node_list * aux = head;
   while(aux != NULL) {
     codegen(aux->tree);
     aux = aux->next;
   }
-  printf("SUCCESS\n");
 }
 
-void print_inst_list(node_list * head) {
-  node_list * aux = head;
-  while(aux != NULL) {
-    fprintf(out_file, "%p --> ", aux);
-    aux = aux->next;
+
+void codegen_entree(char * id) {
+  ts * ts_id = ts_retrouver_id(id);
+  int size = ts_id->size;
+  for(int i = 0; i < size; i++) {
+    fprintf(out_file, "READ\n"); ligne_ram++;
+    fprintf(out_file, "STORE %d\n", ts_id->adr+i); ligne_ram++;
   }
-  fprintf(out_file, "NULL\n");
 }
 
-node_list * extend(node_list * l1, node_list * l2) {
-  if (l1 == NULL) {
-    return l2;
+bool detect_const(asa * arbre_op) {
+  /*
+  ** Detecte dans l'arbre un construnctions du type x + 3
+   */
+  assert(arbre_op->type == typeOp);
+  bool detected = false;
+  if (arbre_op->op.noeud[0]->type == typeNb
+      || arbre_op->op.noeud[1]->type == typeNb) {
+      detected = true;
+    }
+  return detected;
+}
+
+bool detect_inc(asa * arbre_aff) {
+  /*
+  ** Detecte dans l'arbre un construnctions du type x <- x + 1
+   */
+  assert(arbre_aff->type == typeAff);
+  asa * iden = arbre_aff->aff.noeud[0];
+  assert(iden->type == typeID);
+  bool detected = false;
+  if (arbre_aff->aff.noeud[1]->type == typeOp) {
+    asa * arbre_op = arbre_aff->aff.noeud[1];
+    if (arbre_op->op.ope == '+'
+        && (arbre_op->op.noeud[0]->type == typeID
+           || arbre_op->op.noeud[1]->type == typeID)
+        && (arbre_op->op.noeud[0]->type == typeNb
+            || arbre_op->op.noeud[1]->type == typeNb))
+      {
+
+        asa * iden_op ;
+        asa * nb;
+        if (arbre_op->op.noeud[0]->type == typeID)  {
+          iden_op = arbre_op->op.noeud[0];
+          nb = arbre_op->op.noeud[1];
+        }
+        if (arbre_op->op.noeud[1]->type == typeID)  {
+          iden_op = arbre_op->op.noeud[1];
+          nb = arbre_op->op.noeud[0];
+        }
+        if (iden_op->id.ts_id == iden->id.ts_id && nb->nb.val == 1)
+          detected = true;
+      }
   }
-  node_list * aux = l1;
-  while(aux->next != NULL) {
-    aux = aux->next;
+  return detected;
+}
+
+bool detect_dec(asa * arbre_aff) {
+  /*
+  ** Detecte dans l'arbre un construnctions du type x <- x - 1
+   */
+  assert(arbre_aff->type == typeAff);
+  asa * iden = arbre_aff->aff.noeud[0];
+  assert(iden->type == typeID);
+  bool detected = false;
+  if (arbre_aff->aff.noeud[1]->type == typeOp) {
+    asa * arbre_op = arbre_aff->aff.noeud[1];
+    if (arbre_op->op.ope == '-'
+        && (arbre_op->op.noeud[0]->type == typeID
+           || arbre_op->op.noeud[1]->type == typeID)
+        && (arbre_op->op.noeud[0]->type == typeNb
+            || arbre_op->op.noeud[1]->type == typeNb))
+      {
+
+        asa * iden_op ;
+        asa * nb;
+        if (arbre_op->op.noeud[0]->type == typeID)  {
+          iden_op = arbre_op->op.noeud[0];
+          nb = arbre_op->op.noeud[1];
+        }
+        if (arbre_op->op.noeud[1]->type == typeID)  {
+          iden_op = arbre_op->op.noeud[1];
+          nb = arbre_op->op.noeud[0];
+        }
+        if (iden_op->id.ts_id == iden->id.ts_id && nb->nb.val == 1)
+          detected = true;
+      }
   }
-  aux->next = l2;
-  return l1;
+  return detected;
+}
+
+bool detect_comp_iden(asa * arbre_comp) {
+  /*
+  ** Detecte dans l'arbre un construnctions du type x < y
+  */
+
+  bool detect = false;
+  if (arbre_comp->op.ope == '<' && arbre_comp->op.noeud[0]->type == typeID
+      && arbre_comp->op.noeud[1]->type == typeID) {
+    detect = true;
+  }
+  return detect;
 }
 
 node_list * creer_node_list(asa * tree) {
@@ -629,13 +660,50 @@ node_list * creer_node_list(asa * tree) {
   return NULL;
 }
 
-void codegen_entree(char * id) {
-  ts * ts_id = ts_retrouver_id(id);
-  int size = ts_id->size;
-  for(int i = 0; i < size; i++) {
-    fprintf(out_file, "READ\n"); ligne_ram++;
-    fprintf(out_file, "STORE %d\n", ts_id->adr+i); ligne_ram++;
+node_list * extend(node_list * l1, node_list * l2) {
+  if (l1 == NULL) {
+    return l2;
   }
+  node_list * aux = l1;
+  while(aux->next != NULL) {
+    aux = aux->next;
+  }
+  aux->next = l2;
+  return l1;
+}
+
+int count_ninst(node_list * head) {
+  /*
+  ** Compte les nombres d'instructions dans la liste
+   */
+  int res = 0;
+  node_list * aux = head;
+  while(aux != NULL) {
+    res += aux->tree->ninst;
+    aux = aux->next;
+  }
+  return res;
+}
+
+void free_list_insts(node_list * head) {
+  if (head) {
+    node_list * aux;
+    while(head != NULL) {
+      aux = head;
+      free_asa(head->tree);
+      head = head->next;
+      free(aux);
+    }
+  }
+}
+
+void print_inst_list(node_list * head) {
+  node_list * aux = head;
+  while(aux != NULL) {
+    fprintf(out_file, "%p --> ", aux);
+    aux = aux->next;
+  }
+  fprintf(out_file, "NULL\n");
 }
 
 void yyerror(const char * s) {

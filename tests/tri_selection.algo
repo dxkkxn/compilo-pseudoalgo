@@ -1,7 +1,8 @@
 ALGO tri_selection
-ENTREE tab[4]
+ENTREE tab[10]
+# tri selection sur un tableau de taille 10 lu en entree
 DEBUT
-  VAR N <- 4
+  VAR N <- 10
   VAR i <- 0
   VAR min j tmp min_i
   TQ i < N FAIRE
@@ -22,7 +23,7 @@ DEBUT
 
 # afficher le tableau
   i <- 0
-  TQ i < 4 FAIRE
+  TQ i < N FAIRE
     AFFICHER tab[i]
     i <- i + 1
   FTQ

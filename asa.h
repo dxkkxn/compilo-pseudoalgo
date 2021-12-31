@@ -24,11 +24,6 @@ typedef struct {
   struct asa * noeud[2];
 } noeudOp;
 
-typedef struct node_list {
-   struct asa * tree;
-   struct node_list * next;
-} node_list;
-
 typedef struct {
   inst_t instr;
   struct asa * noeud_exp;
@@ -62,17 +57,19 @@ typedef struct asa {
     noeudOp op;
     noeudInst inst;
     noeudAff aff;
-    noeudAffTab aff_tab;
     feuilleID id;
     feuilleIDTab id_tab;
+    noeudAffTab aff_tab;
   };
 } asa;
 
+typedef struct node_list {
+   struct asa * tree;
+   struct node_list * next;
+} node_list;
+
 extern int tete ;
 extern int ligne_ram ;
-
-node_list * extend(node_list * l1, node_list * l2);
-node_list * creer_node_list(asa * tree);
 
 // fonction d'erreur utilisée également par Bison
 void yyerror(const char * s);
@@ -88,24 +85,41 @@ asa * creer_noeudOpUn(int ope, asa * p1);
 
 asa * creer_noeudInst(inst_t inst, asa * p1, node_list * p2, node_list * p3);
 asa * creer_noeudOpLog(int ope, asa * p1, asa * p2);
-void free_asa(asa *p);
 asa * creer_noeudAff(asa * p1, asa * p2);
 asa * creer_noeudAffTab(char * iden, asa * index,  asa * exp) ;
 asa * creer_feuilleID(char * iden);
 asa * creer_feuilleIDTab(char * iden, asa * i);
+void free_asa(asa *p);
 
 // produit du code pour la machine RAM à partir de l'arbre abstrait
 // ET de la table de symbole
 void codegen(asa *p);
-
+void main_codegen(node_list * head) ;
 void codegen_list_insts(node_list * head);
 void codegen_entree(char * id);
 
 extern ts * tsymb;
 extern FILE * out_file;
 
+/*
+** foncions de detection pour les optimisations
+*/
 bool detect_const(asa * arbre_op) ;
 bool detect_inc(asa * arbre_aff) ;
 bool detect_dec(asa * arbre_aff) ;
 bool detect_comp_iden(asa * arbre_comp) ;
+
+// fontions de node_list
+node_list * creer_node_list(asa * tree);
+// Concatene l1 a l2
+// (l1 -> l2)
+node_list * extend(node_list * l1, node_list * l2);
+void free_list_insts(node_list * head) ;
+
+void print_inst_list(node_list * head) ;
+
+void codegen_entree(char * id) ;
+void main_codegen(node_list * head) ;
+int count_ninst(node_list * head);
+
 #endif

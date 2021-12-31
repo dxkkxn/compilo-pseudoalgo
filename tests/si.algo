@@ -4,6 +4,7 @@ DEBUT
   VAR bool
   bool <- 1
   AFFICHER bool
+  bool[0]<-8
   SI bool ALORS
      AFFICHER 1
      AFFICHER 2

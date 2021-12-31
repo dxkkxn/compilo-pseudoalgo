@@ -1,18 +1,18 @@
 ALGO Syracuse
 # Affiche le nombre d iterations de
 # l algo de Syracuse pour atteindre
-# 0 ou 1
 ENTREE  n
 DEBUT
   VAR iteration
   iteration <- 0
   TQ ( n != 1) ET ( n != 0) FAIRE
-    SI ( n % 2) = 0 ALORS
+    SI n % 2 = 0 ALORS
       n <- n / 2
     SINON
       n <- n * 3 + 1
     FSI
       iteration <- iteration + 1
+      AFFICHER n
   FTQ
   AFFICHER iteration
 FIN

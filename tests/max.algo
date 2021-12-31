@@ -8,5 +8,4 @@ DEBUT
        max <-a
     FSI
     AFFICHER max
-    AFFICHER 3<1
 FIN

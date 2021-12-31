@@ -7,6 +7,7 @@ def syracuse(n):
         else:
             n = n * 3 + 1
         iteration += 1
+        print(n)
     return iteration
 
 if __name__ == "__main__" :

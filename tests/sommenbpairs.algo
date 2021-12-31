@@ -1,10 +1,9 @@
-ALGO sommepairs_test
+ALGO sommepairs
 ENTREE  n
+# Somme des nombres pairs jusqu'a n (inclus)
 DEBUT
-  VAR res
-  VAR i
-  res <- 0
-  i <- 0
+  VAR res <- 0
+  VAR i <- 0
   TQ i <= n FAIRE
      SI i % 2 = 0 ALORS
         res <- res + i

@@ -1,0 +1,29 @@
+ALGO tri_a_bulles
+ENTREE tab[10]
+# tri a bulles sur un tableau de taille 10 lu en entree
+DEBUT
+  VAR N <- 10
+  VAR i <- 0
+  VAR min j tmp min_i
+  TQ i < N FAIRE
+     j <- 1
+     TQ j < N-i FAIRE
+        SI tab[j-1] > tab[j] ALORS
+            # echanger
+            tmp <- tab[j]
+            tab[j] <- tab[j-1]
+            tab[j-1] <- tmp
+        FSI
+        j <- j+1
+     FTQ
+     i <- i + 1
+  FTQ
+
+# afficher le tableau
+  i <- 0
+  TQ i < N FAIRE
+    AFFICHER tab[i]
+    i <- i + 1
+  FTQ
+
+FIN
