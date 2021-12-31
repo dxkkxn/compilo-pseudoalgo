@@ -114,12 +114,12 @@ node_list * creer_node_list(asa * tree);
 // Concatene l1 a l2
 // (l1 -> l2)
 node_list * extend(node_list * l1, node_list * l2);
+int count_ninst(node_list * head);
 void free_list_insts(node_list * head) ;
 
 void print_inst_list(node_list * head) ;
 
 void codegen_entree(char * id) ;
 void main_codegen(node_list * head) ;
-int count_ninst(node_list * head);
 
 #endif
